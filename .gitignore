@@ -1,0 +1,8 @@
+*.swo
+*.swp
+*~
+.idea
+.vscode
+env-loader-*.tgz
+node_modules
+npm-*.log

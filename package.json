@@ -1,0 +1,20 @@
+{
+  "name": "env-loader",
+  "version": "1.0.0",
+  "description": "config loader with envvar support",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --reporter dot"
+  },
+  "author": "ℜodrigo ℭacilhας <batalema@cacilhas.info>",
+  "license": "BSD-3-Clause",
+  "devDependencies": {
+    "chai": "^4.0.2",
+    "mocha-co": "^1.17.2",
+    "should": "^11.2.1"
+  },
+  "dependencies": {
+    "qs": "^6.5.0",
+    "underscore": "^1.8.3"
+  }
+}
