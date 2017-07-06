@@ -1,20 +1,26 @@
 "use strict"
 
+
 process.env.NODE_ENV = "test"
-const _ = require("underscore")
-const { expect } = require("chai")
+import * as _ from "underscore"
+import { after, before, describe, it } from "mocha-co"
+import { expect } from "chai"
 const envLoader = require("../index")
 
 
-const config = {
+interface Config {
+  [key: string]: any
+}
+
+
+const config: { [env: string]: Config } = {
   defaults:    { x: 3, y: 4 },
   test:        { name: "test", log: false, foo: "", x: 23, y: 42 },
   development: { name: "development", log: false, foo: "bar", x: 6, y: 8 },
   production:  { name: "production", log: true, foo: null, z: 5 },
 }
 
-
-function compareMessedObject(actual, expected) {
+function compareMessedObject(actual: object, expected: object): boolean {
   // TODO: resolve internal attributes issue
   return _.every([
     _(actual).chain()
@@ -31,7 +37,7 @@ function compareMessedObject(actual, expected) {
 
 describe("env-loader", () => {
 
-  let env = envLoader(config)
+  let env: Config = envLoader(config)
 
   describe("default environment", () => {
     it("should be test", () => {

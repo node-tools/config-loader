@@ -4,14 +4,20 @@
   "description": "config loader with envvar support",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --reporter dot"
+    "test": "tsc -p . && mocha --reporter dot"
   },
   "author": "ℜodrigo ℭacilhας <batalema@cacilhas.info>",
   "license": "BSD-3-Clause",
   "devDependencies": {
+    "@types/chai": "^4.0.1",
+    "@types/mocha": "^2.2.41",
+    "@types/node": "^8.0.8",
+    "@types/should": "^8.3.0",
+    "@types/underscore": "^1.8.1",
     "chai": "^4.0.2",
     "mocha-co": "^1.17.2",
-    "should": "^11.2.1"
+    "should": "^11.2.1",
+    "typescript": "^2.4.1"
   },
   "dependencies": {
     "qs": "^6.5.0",

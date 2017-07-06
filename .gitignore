@@ -6,3 +6,4 @@
 env-loader-*.tgz
 node_modules
 npm-*.log
+test/**/*.js
