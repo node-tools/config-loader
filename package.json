@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "config loader with envvar support",
   "main": "index.js",
+  "types": "index.d.ts",
+  "typings": "index.d.ts",
   "scripts": {
     "test": "tsc -p . && mocha --reporter dot"
   },
