@@ -116,22 +116,42 @@ describe("env-loader", () => {
       expect(envLoader({ defaults: undefined, test: 42 })).to.be.equal(42)
     })
 
+    it("should not return number", () => {
+      expect(envLoader({ defaults: undefined, test: "42" })).to.be.equal("42")
+    })
+
     it("should return true", () => {
-      expect(envLoader({ defaults: undefined, test: "true" })).to.be.true
+      expect(envLoader({ defaults: undefined, test: true })).to.be.true
+    })
+
+    it("should not return true", () => {
+      expect(envLoader({ defaults: undefined, test: "true" }))
+        .to.be.equal("true")
     })
 
     it("should return false", () => {
-      expect(envLoader({ defaults: undefined, test: "false" })).to.be.false
+      expect(envLoader({ defaults: undefined, test: false })).to.be.false
+    })
+
+    it("should not return false", () => {
+      expect(envLoader({ defaults: undefined, test: "false" }))
+        .to.be.equal("false")
     })
 
     it("should return null", () => {
-      expect(envLoader({ defaults: undefined, test: "null" })).to.be.null
+      expect(envLoader({ defaults: undefined, test: null })).to.be.null
+    })
+
+    it("should not return null", () => {
+      expect(envLoader({ defaults: undefined, test: "null" }))
+        .to.be.equal("null")
     })
   })
 
   describe("duration strings", () => {
     it("should parse milliseconds", () => {
-      expect(envLoader({ defaults: undefined, test: "50" })).to.be.equal(50)
+      expect(envLoader({ defaults: undefined, test: "PT0.050S" }))
+        .to.be.equal(50)
     })
 
     it("should parse seconds", () => {
@@ -252,10 +272,16 @@ describe("env-loader", () => {
         .to.be.equal("")
     })
 
-    it("should recognise querystring", () => {
-      process.env.DATA = "x=3&y=4&t=PT2S&v=null"
+    it("should recognise undefined", () => {
+      delete process.env.DATA
       expect(envLoader({ defaults: undefined, test: "env:DATA" }))
-        .to.be.eql({ x: 3, y: 4, t: 2000, v: null })
+        .to.be.undefined
+    })
+
+    it("should recognise querystring", () => {
+      process.env.DATA = "x=3&y=4&t=PT2S&v=null&b=true&v2=raw:null"
+      expect(envLoader({ defaults: undefined, test: "env:DATA" }))
+        .to.be.eql({ x: 3, y: 4, t: 2000, v: null, b: true, v2: "null" })
     })
 
     it("should recognise duration and array", () => {

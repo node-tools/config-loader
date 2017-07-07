@@ -29,8 +29,8 @@ function replicate(destination, source) {
 }
 
 
-function parseEnvValue(resource) {
-  if (typeof resource === "string")
+function parseEnvValue(resource, isQs = false) {
+  if (isQs && typeof resource === "string")
     try { resource = JSON.parse(resource) }
     catch(_err) {}
 
@@ -47,7 +47,7 @@ function parseEnvValue(resource) {
             break
 
           case resource.startsWith("env:"): // parse envvar
-            resource = parseEnvValue(process.env[resource.slice(4)])
+            resource = parseEnvValue(process.env[resource.slice(4)], true)
             break
 
           case durationPattern.test(resource): // ISO-8601 duration
@@ -57,7 +57,7 @@ function parseEnvValue(resource) {
           case /^\w+(\[\w*\])?=([^&]*)?(&\w+(\[\w*\])?=([^&]*)?)*$/
               .test(resource):
             resource = _.chain(qs.parse(resource))
-                        .map((v, k) => [ k, parseEnvValue(v) ])
+                        .map((v, k) => [ k, parseEnvValue(v, true) ])
                         .filter(([ _k, v ]) => v !== undefined)
                         .object()
                         .value()
@@ -82,7 +82,7 @@ function parseEnvValue(resource) {
             break
 
           case Array.isArray(resource):
-            resource = resource.map(e => parseEnvValue(e))
+            resource = resource.map(e => parseEnvValue(e, isQs))
             break
 
           /*
@@ -91,7 +91,7 @@ function parseEnvValue(resource) {
 
           default:
             resource = _.chain(resource)
-                        .map((v, k) => [ k, parseEnvValue(v) ])
+                        .map((v, k) => [ k, parseEnvValue(v, isQs) ])
                         .object()
                         .value()
         }
@@ -128,7 +128,7 @@ singleValue = value =>
 module.exports = (config, nodeEnv) => {
   nodeEnv = nodeEnv || getNodeEnv()
   const { defaults, development } = config
-  let current = config[nodeEnv] || development
+  let current = _.isUndefined(config[nodeEnv]) ? development : config[nodeEnv]
   current = _.isUndefined(current) ? development : current
   current = _.isUndefined(current) ? defaults : current
 
