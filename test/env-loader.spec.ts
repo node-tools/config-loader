@@ -182,8 +182,8 @@ describe("env-loader", () => {
       expect(envLoader({ test: "env:DATA" })).to.be.eql({ x: 3, y: 4 })
     })
 
-    it("should recognise temporal data", () => {
-      process.env.DATA = "log=error&log=trace&time=2h"
+    it("should recognise temporal data and array", () => {
+      process.env.DATA = "log[]=error&log[]=trace&time=2h"
       const data = envLoader({ test: "env:DATA" })
       expect(data).to.have.all.keys([ "log", "time" ])
       expect(data.log).to.be.eql([ "error", "trace" ])
