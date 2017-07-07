@@ -18,11 +18,14 @@ interface Configs extends envLoader.Config {
 }
 
 
+const homedir = process.env.HOME
 const config: Configs = {
   defaults:    { x: 3, y: 4 },
   test:        { name: "test", log: false, foo: "", x: 23, y: 42 },
   development: { name: "development", log: false, foo: "bar", x: 6, y: 8 },
-  production:  { name: "production", log: true, foo: null, z: 5 },
+  production: {
+    name: "production", log: true, foo: null, z: 5, home: "env:HOME",
+  },
 }
 
 
@@ -53,6 +56,7 @@ describe("env-loader", () => {
         const { defaults } = config
         production.x = defaults.x
         production.y = defaults.y
+        production.home = homedir
         expect(env).to.be.eql(production)
         expect(env.name).to.be.equal("production")
         expect(env.log).to.be.true
@@ -88,6 +92,7 @@ describe("env-loader", () => {
       const { defaults } = config
       production.x = defaults.x
       production.y = defaults.y
+      production.home = homedir
       expect(envLoader(config, "test")).to.be.eql(config.test)
       expect(envLoader(config, "development")).to.be.eql(config.development)
       expect(envLoader(config, "production")).to.be.eql(production)

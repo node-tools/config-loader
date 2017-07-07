@@ -17,7 +17,7 @@ const durationPattern = new RegExp(
 )
 
 const dtPattern =
-  /^\d{4}-\d\d-\d\d(T\d\d:\d\d(:\d\d(\.\d\d\d)?([+-]?\d{4}|Z)?)?)?$/
+  /^\d{4}-\d\d-\d\d(T\d\d:\d\d(:\d\d(\.\d\d\d)?([+-]\d{4}|Z)?)?)?$/
 
 
 function replicate(destination, source) {
@@ -168,21 +168,15 @@ singleValue = value =>
 
 module.exports = (config, nodeEnv) => {
   nodeEnv = nodeEnv || getNodeEnv()
-  config = expandKeys(_.clone(config))
+  config = parseEnvValue(expandKeys(_.clone(config)))
 
   const { defaults, development } = config
   let current = _.isUndefined(config[nodeEnv]) ? development : config[nodeEnv]
   current = _.isUndefined(current) ? development : current
   current = _.isUndefined(current) ? defaults : current
 
-  if (defaults === current)
-    current = parseEnvValue(current)
-
-  else
-    current = replicate(
-      parseEnvValue(current),
-      parseEnvValue(defaults)
-    )
+  if (defaults !== current)
+    current = replicate(current, defaults)
 
   return current
 }
