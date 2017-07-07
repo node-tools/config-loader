@@ -1,5 +1,5 @@
 {
-  "name": "env-loader",
+  "name": "env-o-loader",
   "version": "1.0.0",
   "description": "config loader with envvar support",
   "main": "index.js",
@@ -20,10 +20,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:cacilhas/env-loader.git"
+    "url": "git@github.com:cacilhas/env-o-loader.git"
   },
   "bugs": {
-    "url": "https://github.com/cacilhas/env-loader/issues"
+    "url": "https://github.com/cacilhas/env-o-loader/issues"
   },
   "license": "BSD-3-Clause",
   "devDependencies": {

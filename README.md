@@ -1,4 +1,4 @@
-# EnvLoader
+# Env-o-Loader
 
 [b2wads]: http://www.b2wadvertising.com/
 [iso8601]: https://en.wikipedia.org/wiki/ISO_8601
@@ -16,8 +16,8 @@ base, and it made sense to release this as [open source](./COPYING).
 Simply import the module and call it as a function:
 
 ```javascript
-const envLoader = require("envLoader")
-const settings = envLoader(require("config/my-app"))
+const loader = require("env-o-loader")
+const settings = loader(require("config/my-app"))
 ```
 
 The configuration object must have a `defaults` key at least, and should have a
@@ -35,18 +35,18 @@ Let’s take the following JSON settings file:
 }
 ```
 
-EnvLoader will select the environment according to the `NODE_ENV` envvar
+Env-o-Loader will select the environment according to the `NODE_ENV` envvar
 content, defaults to `development`.
 
-- If `NODE_ENV` is `test`, EnvLoader returns `"test environment"`;
-- If `NODE_ENV` is `production`, EnvLoader returns the content of the `MY_VAR`
-  envvar;
-- If `NODE_ENV` is something else, EnvLoader returns `"some default value"`.
+- If `NODE_ENV` is `test`, Env-o-Loader returns `"test environment"`;
+- If `NODE_ENV` is `production`, Env-o-Loader returns the content of the
+  `MY_VAR` envvar;
+- If `NODE_ENV` is something else, Env-o-Loader returns `"some default value"`.
 
 You also can supply the environment you want as second parameter:
 
 ```javascript
-envLoader(require("./config"), "sandbox")
+loader(require("./config"), "sandbox")
 ```
 
 ### Environments as object
@@ -68,7 +68,7 @@ For example:
 }
 ```
 
-Under development environment, EnvLoader returns the following object:
+Under development environment, Env-o-Loader returns the following object:
 
 ```javascript
 { x: 3, y: 4, z: 5 }
@@ -129,7 +129,7 @@ And can be compound with unnested one:
 
 ### Data from envvar
 
-Using the `env:` prefix, EnvLoader loads the content from an envvar.
+Using the `env:` prefix, Env-o-Loader loads the content from an envvar.
 
 To load objects from envvar, use querystring format:
 
@@ -152,7 +152,7 @@ env SETTINGS="v[x]=3&v[y]=4"
 
 ### Other types
 
-If you must load settings from JSON or envvar, EnvLoader supports more types
+If you must load settings from JSON or envvar, Env-o-Loader supports more types
 than those formats, serialised as string.
 
 - Date: use [ISO 8601][iso8601]: `2010-10-10` for October 10, 2010.
