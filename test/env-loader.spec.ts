@@ -5,7 +5,7 @@ process.env.NODE_ENV = "test"
 import * as _ from "underscore"
 import { after, before, describe, it } from "mocha-co"
 import { expect } from "chai"
-const envLoader = require("../index")
+import envLoader = require("../index")
 
 
 type Config = { [key: string]: any }
