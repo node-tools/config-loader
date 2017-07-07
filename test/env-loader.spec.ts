@@ -18,20 +18,6 @@ const config: { [env: string]: Config } = {
   production:  { name: "production", log: true, foo: null, z: 5 },
 }
 
-function compareMessedObject(actual: object, expected: object): boolean {
-  // TODO: resolve internal attributes issue
-  return _.every([
-    _(actual).chain()
-             .map((v, k) => expected[k] === v)
-             .every()
-             .value(),
-    _(expected).chain()
-               .map((v, k) => actual[k] === v)
-               .every()
-               .value(),
-  ])
-}
-
 
 describe("env-loader", () => {
 
@@ -39,7 +25,7 @@ describe("env-loader", () => {
 
   describe("default environment", () => {
     it("should be test", () => {
-      expect(compareMessedObject(config.test, env)).to.be.true
+      expect(env).to.be.eql(config.test)
     })
 
     it("should preserve set attributes", () => {
@@ -59,7 +45,7 @@ describe("env-loader", () => {
         const { defaults } = config
         production.x = defaults.x
         production.y = defaults.y
-        expect(compareMessedObject(env, production)).to.be.true
+        expect(env).to.be.eql(production)
         expect(env.name).to.be.equal("production")
         expect(env.log).to.be.true
         expect(env.foo).to.be.null
@@ -74,7 +60,7 @@ describe("env-loader", () => {
       try {
         delete process.env.NODE_ENV
         env = envLoader(config)
-        expect(compareMessedObject(env, config.development)).to.be.true
+        expect(env).to.be.eql(config.development)
         expect(env.name).to.be.equal("development")
         expect(env.log).to.be.false
         expect(env.foo).to.be.equal("bar")
@@ -92,13 +78,9 @@ describe("env-loader", () => {
       const { defaults } = config
       production.x = defaults.x
       production.y = defaults.y
-      expect(compareMessedObject(envLoader(config, "test"), config.test))
-      .to.be.true
-      expect(compareMessedObject(envLoader(config, "development"),
-                                 config.development))
-      .to.be.true
-      expect(compareMessedObject(envLoader(config, "production"), production))
-      .to.be.true
+      expect(envLoader(config, "test")).to.be.eql(config.test)
+      expect(envLoader(config, "development")).to.be.eql(config.development)
+      expect(envLoader(config, "production")).to.be.eql(production)
     })
 
     it("should fill unset attributes with development values", () => {
@@ -197,9 +179,7 @@ describe("env-loader", () => {
 
     it("should recognise querystring", () => {
       process.env.DATA = "x=3&y=4"
-      expect(compareMessedObject(envLoader({ test: "env:DATA" }),
-                                 { x: 3, y: 4 }))
-      .to.be.true
+      expect(envLoader({ test: "env:DATA" })).to.be.eql({ x: 3, y: 4 })
     })
 
     it("should recognise temporal data", () => {
@@ -216,8 +196,7 @@ describe("env-loader", () => {
       expect(data).to.have.all.keys([ "x", "y", "data" ])
       expect(data.x).to.be.equal(3)
       expect(data.y).to.be.equal(4)
-      expect(compareMessedObject(data.data, { foo: "bar", baaz: null }))
-      .to.be.true
+      expect(data.data).to.be.eql({ foo: "bar", baaz: null })
     })
   })
 })
