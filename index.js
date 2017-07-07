@@ -42,6 +42,10 @@ function parseEnvValue(resource) {
           case resource.trim() === "": // empty string
             break
 
+          case resource.startsWith("raw:"): // raw string
+            resource = resource.slice(4)
+            break
+
           case resource.startsWith("env:"): // parse envvar
             resource = parseEnvValue(process.env[resource.slice(4)])
             break
@@ -60,6 +64,7 @@ function parseEnvValue(resource) {
             break
 
           // TODO: parse ISO-8601 date/time
+          // TODO: regex
           default:
             // Take what you got
             break

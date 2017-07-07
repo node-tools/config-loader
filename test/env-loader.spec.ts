@@ -115,6 +115,18 @@ describe("env-loader", () => {
     it("should return number", () => {
       expect(envLoader({ defaults: undefined, test: 42 })).to.be.equal(42)
     })
+
+    it("should return true", () => {
+      expect(envLoader({ defaults: undefined, test: "true" })).to.be.true
+    })
+
+    it("should return false", () => {
+      expect(envLoader({ defaults: undefined, test: "false" })).to.be.false
+    })
+
+    it("should return null", () => {
+      expect(envLoader({ defaults: undefined, test: "null" })).to.be.null
+    })
   })
 
   describe("duration strings", () => {
@@ -150,6 +162,48 @@ describe("env-loader", () => {
         envLoader({ defaults: undefined, test: { internal: "PT2.25S" } })
           .internal
       ).to.be.equal(2250)
+    })
+  })
+
+  describe("raw string", () => {
+    it("should return empty string", () => {
+      expect(envLoader({ defaults: undefined, test: "raw:" }))
+        .to.be.equal("")
+    })
+
+    it("should not parse number", () => {
+      expect(envLoader({ defaults: undefined, test: "raw:42" }))
+        .to.be.equal("42")
+    })
+
+    it("should not parse true", () => {
+      expect(envLoader({ defaults: undefined, test: "raw:true" }))
+        .to.be.equal("true")
+    })
+
+    it("should not parse false", () => {
+      expect(envLoader({ defaults: undefined, test: "raw:false" }))
+        .to.be.equal("false")
+    })
+
+    it("should not parse null", () => {
+      expect(envLoader({ defaults: undefined, test: "raw:null" }))
+        .to.be.equal("null")
+    })
+
+    it("should not parse env", () => {
+      expect(envLoader({ defaults: undefined, test: "raw:env:HOME" }))
+        .to.be.equal("env:HOME")
+    })
+
+    it("should not parse duration", () => {
+      expect(envLoader({ defaults: undefined, test: "raw:PT12H" }))
+        .to.be.equal("PT12H")
+    })
+
+    it("should not parse raw", () => {
+      expect(envLoader({ defaults: undefined, test: "raw:raw:true" }))
+        .to.be.equal("raw:true")
     })
   })
 
@@ -199,9 +253,9 @@ describe("env-loader", () => {
     })
 
     it("should recognise querystring", () => {
-      process.env.DATA = "x=3&y=4"
+      process.env.DATA = "x=3&y=4&t=PT2S&v=null"
       expect(envLoader({ defaults: undefined, test: "env:DATA" }))
-        .to.be.eql({ x: 3, y: 4 })
+        .to.be.eql({ x: 3, y: 4, t: 2000, v: null })
     })
 
     it("should recognise duration and array", () => {
