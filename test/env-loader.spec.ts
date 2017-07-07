@@ -117,38 +117,39 @@ describe("env-loader", () => {
     })
   })
 
-  describe("temporal strings", () => {
+  describe("duration strings", () => {
     it("should parse milliseconds", () => {
       expect(envLoader({ defaults: undefined, test: "50" })).to.be.equal(50)
     })
 
     it("should parse seconds", () => {
-      expect(envLoader({ defaults: undefined, test: "2s" })).to.be.equal(2000)
+      expect(envLoader({ defaults: undefined, test: "PT2S" })).to.be.equal(2000)
     })
 
     it("should parse minutes", () => {
-      expect(envLoader({ defaults: undefined, test: "5m" })).to.be.equal(300000)
+      expect(envLoader({ defaults: undefined, test: "PT5M" }))
+        .to.be.equal(300000)
     })
 
     it("should parse hours", () => {
-      expect(envLoader({ defaults: undefined, test: "3h" }))
+      expect(envLoader({ defaults: undefined, test: "PT3H" }))
         .to.be.equal(10800000)
     })
 
     it("should parse days", () => {
-      expect(envLoader({ defaults: undefined, test: "3.5d" })).to.be.equal(302400000)
+      expect(envLoader({ defaults: undefined, test: "P3DT12H" })).to.be.equal(302400000)
     })
 
     it("should deal with compound times", () => {
-      expect(envLoader({ defaults: undefined, test: "1h30m" }))
+      expect(envLoader({ defaults: undefined, test: "PT1H30M" }))
         .to.be.equal(5400000)
     })
 
     it("should detect internal data", () => {
       expect(
-        envLoader({ defaults: undefined, test: { internal: "2.25h" } })
+        envLoader({ defaults: undefined, test: { internal: "PT2.25S" } })
           .internal
-      ).to.be.equal(8100000)
+      ).to.be.equal(2250)
     })
   })
 
@@ -203,8 +204,8 @@ describe("env-loader", () => {
         .to.be.eql({ x: 3, y: 4 })
     })
 
-    it("should recognise temporal data and array", () => {
-      process.env.DATA = "log[]=error&log[]=trace&time=2h"
+    it("should recognise duration and array", () => {
+      process.env.DATA = "log[]=error&log[]=trace&time=PT2H"
       const data = envLoader({ defaults: undefined, test: "env:DATA" })
       expect(data).to.have.all.keys([ "log", "time" ])
       expect(data.log).to.be.eql([ "error", "trace" ])

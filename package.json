@@ -35,6 +35,7 @@
     "typescript": "^2.4.1"
   },
   "dependencies": {
+    "iso8601-duration": "^1.0.6",
     "qs": "^6.5.0",
     "underscore": "^1.8.3"
   }

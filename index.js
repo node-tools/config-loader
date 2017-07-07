@@ -5,9 +5,15 @@
 
 const _ = require("underscore")
 const qs = require("qs")
+const duration = require("iso8601-duration")
 let singleValue = null
 
 const getNodeEnv = () => process.env.NODE_ENV || "development"
+
+// Woraround duration.default.pattern issue
+const durationPattern = new RegExp(
+  `^${duration.default.pattern.toString().slice(1, -1)}$`
+)
 
 
 function replicate(destination, source) {
@@ -20,26 +26,6 @@ function replicate(destination, source) {
         destination[attr] = source[attr]
 
   return destination
-}
-
-
-function dealWithData(resource) {
-  switch (resource.slice(-1)) {
-    case "s":
-      return parseFloat(resource) * 1000
-
-    case "m":
-      return parseFloat(resource) * 60000
-
-    case "h":
-      return parseFloat(resource) * 3600000
-
-    case "d":
-      return parseFloat(resource) * 86400000
-
-    default:
-      return resource
-  }
 }
 
 
@@ -60,20 +46,8 @@ function parseEnvValue(resource) {
             resource = parseEnvValue(process.env[resource.slice(4)])
             break
 
-          case /^(\d+(\.\d+)?[dhms])+$/.test(resource): // parse temporal string
-            {
-              let sum = 0
-              while ((
-                resource = resource.replace(
-                  /\d+(\.\d+)?[dhms]/,
-                  m => {
-                    sum += dealWithData(m)
-                    return ""
-                  }
-                )
-              ) !== "") {}
-              resource = sum
-            }
+          case durationPattern.test(resource): // ISO-8601 duration
+            resource = duration.toSeconds(duration.parse(resource)) * 1000
             break
 
           case !/^\w+:/.test(resource) && /=/.test(resource):
@@ -85,6 +59,7 @@ function parseEnvValue(resource) {
             resource = singleValue(_.isEmpty(resource) ? undefined : resource)
             break
 
+          // TODO: parse ISO-8601 date/time
           default:
             // Take what you got
             break
