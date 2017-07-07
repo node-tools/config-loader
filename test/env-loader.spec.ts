@@ -112,12 +112,20 @@ describe("env-loader", () => {
         .to.be.equal("something")
     })
 
-    it("should return number", () => {
+    it("should return integer", () => {
       expect(envLoader({ defaults: undefined, test: 42 })).to.be.equal(42)
     })
 
-    it("should not return number", () => {
+    it("should not return integer", () => {
       expect(envLoader({ defaults: undefined, test: "42" })).to.be.equal("42")
+    })
+
+    it("should return float", () => {
+      expect(envLoader({ defaults: undefined, test: .125 })).to.be.equal(.125)
+    })
+
+    it("should not return float", () => {
+      expect(envLoader({ defaults: undefined, test: "5.0" })).to.be.equal("5.0")
     })
 
     it("should return true", () => {
@@ -175,7 +183,13 @@ describe("env-loader", () => {
     })
 
     it("should parse days", () => {
-      expect(envLoader({ defaults: undefined, test: "P3DT12H" })).to.be.equal(302400000)
+      expect(envLoader({ defaults: undefined, test: "P3DT12H" }))
+        .to.be.equal(302400000)
+    })
+
+    it("should parse weeks", () => {
+      expect(envLoader({ defaults: undefined, test: "P2W" }))
+        .to.be.equal(1209600000)
     })
 
     it("should deal with compound times", () => {
@@ -188,6 +202,45 @@ describe("env-loader", () => {
         envLoader({ defaults: undefined, test: { internal: "PT2.25S" } })
           .internal
       ).to.be.equal(2250)
+    })
+  })
+
+  describe("date/time string", () => {
+    it("should return date", () => {
+      const value = envLoader({ defaults: undefined, test: "1970-01-01" })
+      expect(value.toJSON().slice(0, 10)).to.be.equal("1970-01-01")
+    })
+
+    it("should return date/time", () => {
+      const value = envLoader({
+        defaults: undefined,
+        test: "1970-01-01T02:30:10Z",
+      })
+      expect(value.toJSON()).to.be.equal("1970-01-01T02:30:10.000Z")
+    })
+
+    it("should return date/time with timezone", () => {
+      const value = envLoader({
+        defaults: undefined,
+        test: "1970-01-01T02:30:10-0300",
+      })
+      expect(value.toJSON()).to.be.equal("1970-01-01T05:30:10.000Z")
+    })
+
+    it("should return date/time with milliseconds", () => {
+      const value = envLoader({
+        defaults: undefined,
+        test: "1970-01-02T12:40:03.125Z",
+      })
+      expect(value.toJSON()).to.be.equal("1970-01-02T12:40:03.125Z")
+    })
+
+    it("should be wrong date resilient", () => {
+      const value = envLoader({
+        defaults: undefined,
+        test: "1970-13-02T12:40:03.125Z",
+      })
+      expect(value).to.be.equal("1970-13-02T12:40:03.125Z")
     })
   })
 
@@ -235,6 +288,18 @@ describe("env-loader", () => {
     it("should not parse regex", () => {
       expect(envLoader({ defaults: undefined, test: "raw:/^.*$/" }))
         .to.be.equal("/^.*$/")
+    })
+
+    it("should not parse date", () => {
+      expect(envLoader({ defaults: undefined, test: "raw:2000-12-31" }))
+        .to.be.equal("2000-12-31")
+    })
+
+    it("should not parse date/time", () => {
+      expect(envLoader({
+        defaults: undefined, test: "raw:2000-12-31T23:59:59.999Z",
+      }))
+        .to.be.equal("2000-12-31T23:59:59.999Z")
     })
   })
 

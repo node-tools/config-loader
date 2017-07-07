@@ -2,6 +2,7 @@
 
 /* eslint no-unused-vars: ["warn", {"args": "after-used"}] */
 /* eslint no-console: 0 */
+/* eslint max-depth: 0 */
 
 const _ = require("underscore")
 const qs = require("qs")
@@ -14,6 +15,9 @@ const getNodeEnv = () => process.env.NODE_ENV || "development"
 const durationPattern = new RegExp(
   `^${duration.default.pattern.toString().slice(1, -1)}$`
 )
+
+const dtPattern =
+  /^\d{4}-\d\d-\d\d(T\d\d:\d\d(:\d\d(\.\d\d\d)?([+-]?\d{4}|Z)?)?)?$/
 
 
 function replicate(destination, source) {
@@ -68,10 +72,17 @@ function parseEnvValue(resource, isQs = false) {
             resource = new RegExp(resource.slice(1, -1))
             break
 
-          // TODO: parse ISO-8601 date/time
+          case dtPattern.test(resource): // ISO-8601 date/time
+            try {
+              const date = new Date(resource)
+              if (date.toJSON() !== null)
+                resource = date
+            } catch(_e) {}
+            break
+
           // TODO: nested keys
-          // TODO: regex
           default:
+
             // Take what you got
             break
         }
