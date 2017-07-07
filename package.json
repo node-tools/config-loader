@@ -5,10 +5,23 @@
   "main": "index.js",
   "types": "index.d.ts",
   "typings": "index.d.ts",
-  "scripts": {
-    "test": "tsc -p . && mocha --reporter dot"
+  "engines": {
+    "node": ">= 6.10.0"
   },
-  "author": "ℜodrigo ℭacilhας <batalema@cacilhas.info>",
+  "scripts": {
+    "tstest": "tsc -p test",
+    "lint": "eslint --env es6 --env node --no-eslintrc index.js",
+    "test": "npm run lint && npm run tstest && mocha --reporter dot"
+  },
+  "author": {
+    "name": "ℜodrigo ℭacilhας",
+    "email": "<batalema@cacilhas.info>",
+    "url": "http://cacilhas.info/kodumaro"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@bitbucket.org:cacilhas/env-loader.git"
+  },
   "license": "BSD-3-Clause",
   "devDependencies": {
     "@types/chai": "^4.0.1",

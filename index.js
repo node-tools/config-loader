@@ -1,5 +1,7 @@
 "use strict"
 
+/* eslint no-unused-vars: ["warn", {"args": "after-used"}] */
+
 const _ = require("underscore")
 const qs = require("qs")
 let singleValue = null
