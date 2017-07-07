@@ -83,6 +83,8 @@ describe("env-loader", () => {
   describe("environments", () => {
     it("should load supplied environment", () => {
       const production = _.clone(config.production)
+      expect(production.x).to.be.undefined
+      expect(production.y).to.be.undefined
       const { defaults } = config
       production.x = defaults.x
       production.y = defaults.y
@@ -103,6 +105,11 @@ describe("env-loader", () => {
       expect(production.log).to.be.true
       expect(production.foo).to.be.null
       expect(production.z).to.be.equal(5)
+    })
+
+    it("should deal with nested environments", () => {
+      const env = envLoader({ defaults: { x: 3 }, "test.y": 4 })
+      expect(env).to.be.eql({ x: 3, y: 4 })
     })
   })
 

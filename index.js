@@ -168,18 +168,20 @@ singleValue = value =>
 
 module.exports = (config, nodeEnv) => {
   nodeEnv = nodeEnv || getNodeEnv()
+  config = expandKeys(_.clone(config))
+
   const { defaults, development } = config
   let current = _.isUndefined(config[nodeEnv]) ? development : config[nodeEnv]
   current = _.isUndefined(current) ? development : current
   current = _.isUndefined(current) ? defaults : current
 
   if (defaults === current)
-    current = parseEnvValue(expandKeys(_.clone(current)))
+    current = parseEnvValue(current)
 
   else
     current = replicate(
-      parseEnvValue(expandKeys(_.clone(current))),
-      parseEnvValue(expandKeys(_.clone(defaults)))
+      parseEnvValue(current),
+      parseEnvValue(defaults)
     )
 
   return current
