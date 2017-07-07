@@ -8,9 +8,7 @@ import { expect } from "chai"
 const envLoader = require("../index")
 
 
-interface Config {
-  [key: string]: any
-}
+type Config = { [key: string]: any }
 
 
 const config: { [env: string]: Config } = {
