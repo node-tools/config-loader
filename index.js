@@ -1,6 +1,7 @@
 "use strict"
 
 /* eslint no-unused-vars: ["warn", {"args": "after-used"}] */
+/* eslint no-console: 0 */
 
 const _ = require("underscore")
 const qs = require("qs")
@@ -22,6 +23,26 @@ function replicate(destination, source) {
 }
 
 
+function dealWithData(resource) {
+  switch (resource.slice(-1)) {
+    case "s":
+      return parseFloat(resource) * 1000
+
+    case "m":
+      return parseFloat(resource) * 60000
+
+    case "h":
+      return parseFloat(resource) * 3600000
+
+    case "d":
+      return parseFloat(resource) * 86400000
+
+    default:
+      return resource
+  }
+}
+
+
 function parseEnvValue(resource) {
   if (typeof resource === "string")
     try { resource = JSON.parse(resource) }
@@ -39,25 +60,20 @@ function parseEnvValue(resource) {
             resource = parseEnvValue(process.env[resource.slice(4)])
             break
 
-          case /^\d+(\.\d+)?[dhms]$/.test(resource): // parse temporal string
-            switch (resource.slice(-1)) {
-              case "s":
-                resource = parseFloat(resource) * 1000
-                break
-
-              case "m":
-                resource = parseFloat(resource) * 60000
-                break
-
-              case "h":
-                resource = parseFloat(resource) * 3600000
-                break
-
-              case "d":
-                resource = parseFloat(resource) * 86400000
-                break
+          case /^(\d+(\.\d+)?[dhms])+$/.test(resource): // parse temporal string
+            {
+              let sum = 0
+              while ((
+                resource = resource.replace(
+                  /\d+(\.\d+)?[dhms]/,
+                  m => {
+                    sum += dealWithData(m)
+                    return ""
+                  }
+                )
+              ) !== "") {}
+              resource = sum
             }
-
             break
 
           case !/^\w+:/.test(resource) && /=/.test(resource):
@@ -112,7 +128,7 @@ function parseEnvValue(resource) {
     }
 
   } catch(err) {
-    logger.error(err)
+    console.error(err)
   }
 
   return resource

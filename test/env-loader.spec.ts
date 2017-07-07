@@ -48,7 +48,6 @@ describe("env-loader", () => {
       process.env.NODE_ENV = "production"
 
       try {
-        debugger
         env = envLoader(config)
         const production = _.clone(config.production)
         const { defaults } = config
@@ -138,6 +137,11 @@ describe("env-loader", () => {
 
     it("should parse days", () => {
       expect(envLoader({ defaults: undefined, test: "3.5d" })).to.be.equal(302400000)
+    })
+
+    it("should deal with compound times", () => {
+      expect(envLoader({ defaults: undefined, test: "1h30m" }))
+        .to.be.equal(5400000)
     })
 
     it("should detect internal data", () => {
