@@ -9,7 +9,7 @@ This is a helper to make easier loading enviroment-oriented settings.
 ## Genesis
 
 This code has been born inside [B2WAds][b2wads] code
-base, and make sense to release it as [open source](./COPYING).
+base, and it made sense to release this as [open source](./COPYING).
 
 ## Use
 
@@ -25,7 +25,7 @@ key for each environment you intent to work with.
 
 ### Environments as primitive values
 
-Let’s take the follow JSON settings file:
+Let’s take the following JSON settings file:
 
 ```json
 {
@@ -168,12 +168,14 @@ Extras only in querystring:
 - `null` string resolves to `null`
 - `true` string resolves to `true`
 - `false` string resolves to `false`
+- anything parseable to number resolves to number
 
 To force string, you must prefix the value with `raw:`:
 
 - `raw:null` resolves to `"null"`
 - `raw:2010-10-10` resolves to `"2010-10-10"`
 - `raw:PT12H` resolves to `"PT12H"`
+- `raw:42` resolves to `"42"`
 - `raw:env:HOME` resolves to `"env:HOME"`
 - `raw:raw:` resolves to `"raw:"`
 
