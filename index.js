@@ -114,7 +114,7 @@ function parseEnvValue(resource, isQs = false) {
         break
 
       /*------------------------------------------------------------------------
-       * case other:
+       * case other type:
        *   goes here
        */
 
@@ -129,6 +129,32 @@ function parseEnvValue(resource, isQs = false) {
   }
 
   return resource
+}
+
+
+function expandKeys(obj) {
+  if (!_.isObject(obj))
+    return obj
+
+  for (const [ key, value ] of _.pairs(obj))
+    if (key.indexOf(".") > 0) {
+      const [ outer, ...rest ] = key.split(".")
+      const inner = rest.join(".")
+
+      if (_.isObject(obj[outer])) {
+        obj[outer][inner] = value
+        delete obj[key]
+
+      } else if (_.isUndefined(obj[outer])) {
+        obj[outer] = { [inner]: value }
+        delete obj[key]
+      }
+    }
+
+  for (const value of _.values(obj))
+    expandKeys(value)
+
+  return obj
 }
 
 
@@ -148,12 +174,12 @@ module.exports = (config, nodeEnv) => {
   current = _.isUndefined(current) ? defaults : current
 
   if (defaults === current)
-    current = parseEnvValue(_.clone(current))
+    current = parseEnvValue(expandKeys(_.clone(current)))
 
   else
     current = replicate(
-      parseEnvValue(_.clone(current)),
-      parseEnvValue(_.clone(defaults))
+      parseEnvValue(expandKeys(_.clone(current))),
+      parseEnvValue(expandKeys(_.clone(defaults)))
     )
 
   return current

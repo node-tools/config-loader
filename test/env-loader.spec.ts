@@ -157,7 +157,7 @@ describe("env-loader", () => {
 
     it("should return regex", () => {
       const regex = envLoader({ defaults: undefined, test: "/^.*$/" })
-      expect(_.isRegExp(regex)).to.be.true
+      expect(regex).to.be.a("RegExp")
       expect(regex.source).to.be.equal("^.*$")
     })
   })
@@ -208,6 +208,7 @@ describe("env-loader", () => {
   describe("date/time string", () => {
     it("should return date", () => {
       const value = envLoader({ defaults: undefined, test: "1970-01-01" })
+      expect(value).to.be.a("date")
       expect(value.toJSON().slice(0, 10)).to.be.equal("1970-01-01")
     })
 
@@ -216,6 +217,7 @@ describe("env-loader", () => {
         defaults: undefined,
         test: "1970-01-01T02:30:10Z",
       })
+      expect(value).to.be.a("date")
       expect(value.toJSON()).to.be.equal("1970-01-01T02:30:10.000Z")
     })
 
@@ -224,6 +226,7 @@ describe("env-loader", () => {
         defaults: undefined,
         test: "1970-01-01T02:30:10-0300",
       })
+      expect(value).to.be.a("date")
       expect(value.toJSON()).to.be.equal("1970-01-01T05:30:10.000Z")
     })
 
@@ -232,6 +235,7 @@ describe("env-loader", () => {
         defaults: undefined,
         test: "1970-01-02T12:40:03.125Z",
       })
+      expect(value).to.be.a("date")
       expect(value.toJSON()).to.be.equal("1970-01-02T12:40:03.125Z")
     })
 
@@ -240,6 +244,7 @@ describe("env-loader", () => {
         defaults: undefined,
         test: "1970-13-02T12:40:03.125Z",
       })
+      expect(value).to.be.a("string")
       expect(value).to.be.equal("1970-13-02T12:40:03.125Z")
     })
   })
@@ -317,6 +322,46 @@ describe("env-loader", () => {
     it("should respect URIs with querystring", () => {
       const url = "mysql://user:pass@localhost:3600/db?charset=utf-8"
       expect(envLoader({ defaults: undefined, test: url })).to.be.equal(url)
+    })
+  })
+
+  describe("nested keys", () => {
+    it("should recognise nested keys", () => {
+      const env = envLoader({
+        defaults: undefined,
+        test: {
+          basic: 42,
+          nonnested: { v: "PT0.125S" },
+          "nonnested.x": "2010-10-10",
+          "nested.a.a": "/^.*$/",
+          "nested.a.b": "5.0",
+          "nested.b.a": null,
+          "nested.b.b": true,
+          "nested.c": "some value",
+        },
+      })
+
+      const nestedX = env.nonnested.x
+      const regex = env.nested.a.a
+
+      expect(env).to.be.eql({
+        basic: 42,
+        nonnested: { v: 125, x: nestedX },
+        nested: {
+          a: {
+            a: regex,
+            b: "5.0",
+          },
+          b: {
+            a: null,
+            b: true,
+          },
+          c: "some value",
+        },
+      })
+      expect(nestedX).to.be.a("date")
+      expect(nestedX.toJSON().slice(0, 10)).to.be.equal("2010-10-10")
+      expect(regex).to.be.a("RegExp")
     })
   })
 
