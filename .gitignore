@@ -3,7 +3,8 @@
 *~
 .idea
 .vscode
-env-loader-*.tgz
-node_modules
+/env-loader-*.tgz
+/node_modules
+/package-lock.json
+/test/**/*.js
 npm-*.log
-test/**/*.js
