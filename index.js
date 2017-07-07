@@ -68,8 +68,15 @@ function parseEnvValue(resource, isQs = false) {
             resource = singleValue(_.isEmpty(resource) ? undefined : resource)
             break
 
-          case /^\/.+\/$/.test(resource):
-            resource = new RegExp(resource.slice(1, -1))
+          case /^\/.+\/[gimuy]*$/.test(resource):
+            {
+              let flags
+              if (!resource.endsWith("/")) {
+                flags = _.last(resource.split("/"))
+                resource = resource.replace(/^(\/.+\/)[gimuy]+$/, "$1")
+              }
+              resource = new RegExp(resource.slice(1, -1), flags)
+            }
             break
 
           case dtPattern.test(resource): // ISO-8601 date/time

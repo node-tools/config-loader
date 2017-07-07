@@ -168,9 +168,10 @@ describe("env-loader", () => {
     })
 
     it("should return regex", () => {
-      const regex = envLoader({ defaults: undefined, test: "/^.*$/" })
+      const regex = envLoader({ defaults: undefined, test: "/^.*$/gi" })
       expect(regex).to.be.a("RegExp")
       expect(regex.source).to.be.equal("^.*$")
+      expect(regex.flags).to.be.equal("gi")
     })
   })
 
