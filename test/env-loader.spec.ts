@@ -10,8 +10,15 @@ import envLoader = require("../index")
 
 type Config = { [key: string]: any }
 
+interface Configs extends envLoader.Config {
+  defaults: Config
+  test: Config
+  development: Config
+  production: Config
+}
 
-const config: { [env: string]: Config } = {
+
+const config: Configs = {
   defaults:    { x: 3, y: 4 },
   test:        { name: "test", log: false, foo: "", x: 23, y: 42 },
   development: { name: "development", log: false, foo: "bar", x: 6, y: 8 },
@@ -38,8 +45,10 @@ describe("env-loader", () => {
     })
 
     it("should read from NODE_ENV", () => {
+      process.env.NODE_ENV = "production"
+
       try {
-        process.env.NODE_ENV = "production"
+        debugger
         env = envLoader(config)
         const production = _.clone(config.production)
         const { defaults } = config
@@ -100,55 +109,59 @@ describe("env-loader", () => {
 
   describe("support non-objects", () => {
     it("should return string", () => {
-      expect(envLoader({ test: "something" })).to.be.equal("something")
+      expect(envLoader({ defaults: undefined, test: "something" }))
+        .to.be.equal("something")
     })
 
     it("should return number", () => {
-      expect(envLoader({ test: 42 })).to.be.equal(42)
+      expect(envLoader({ defaults: undefined, test: 42 })).to.be.equal(42)
     })
   })
 
   describe("temporal strings", () => {
     it("should parse milliseconds", () => {
-      expect(envLoader({ test: "50" })).to.be.equal(50)
+      expect(envLoader({ defaults: undefined, test: "50" })).to.be.equal(50)
     })
 
     it("should parse seconds", () => {
-      expect(envLoader({ test: "2s" })).to.be.equal(2000)
+      expect(envLoader({ defaults: undefined, test: "2s" })).to.be.equal(2000)
     })
 
     it("should parse minutes", () => {
-      expect(envLoader({ test: "5m" })).to.be.equal(300000)
+      expect(envLoader({ defaults: undefined, test: "5m" })).to.be.equal(300000)
     })
 
     it("should parse hours", () => {
-      expect(envLoader({ test: "3h" })).to.be.equal(10800000)
+      expect(envLoader({ defaults: undefined, test: "3h" }))
+        .to.be.equal(10800000)
     })
 
     it("should parse days", () => {
-      expect(envLoader({ test: "3.5d" })).to.be.equal(302400000)
+      expect(envLoader({ defaults: undefined, test: "3.5d" })).to.be.equal(302400000)
     })
 
     it("should detect internal data", () => {
-      expect(envLoader({ test: { internal: "2.25h" } }).internal)
-      .to.be.equal(8100000)
+      expect(
+        envLoader({ defaults: undefined, test: { internal: "2.25h" } })
+          .internal
+      ).to.be.equal(8100000)
     })
   })
 
   describe("URI", () => {
     it("should respect local URIs", () => {
       const url = "file:///usr/local/bin"
-      expect(envLoader({ test: url })).to.be.equal(url)
+      expect(envLoader({ defaults: undefined, test: url })).to.be.equal(url)
     })
 
     it("should respect remote URIs", () => {
       const url = "http://localhost/test/"
-      expect(envLoader({ test: url })).to.be.equal(url)
+      expect(envLoader({ defaults: undefined, test: url })).to.be.equal(url)
     })
 
     it("should respect URIs with querystring", () => {
       const url = "mysql://user:pass@localhost:3600/db?charset=utf-8"
-      expect(envLoader({ test: url })).to.be.equal(url)
+      expect(envLoader({ defaults: undefined, test: url })).to.be.equal(url)
     })
   })
 
@@ -164,27 +177,31 @@ describe("env-loader", () => {
     })
 
     it("should support undefined", () => {
-      expect(envLoader({ test: "env:DATA" })).to.be.equal(undefined)
+      expect(envLoader({ defaults: undefined, test: "env:DATA" }))
+        .to.be.equal(undefined)
     })
 
     it("should get envvar", () => {
       process.env.DATA = "42"
-      expect(envLoader({ test: "env:DATA" })).to.be.equal(42)
+      expect(envLoader({ defaults: undefined, test: "env:DATA" }))
+        .to.be.equal(42)
     })
 
     it("should recognise empty", () => {
       process.env.DATA = ""
-      expect(envLoader({ test: "env:DATA" })).to.be.equal("")
+      expect(envLoader({ defaults: undefined, test: "env:DATA" }))
+        .to.be.equal("")
     })
 
     it("should recognise querystring", () => {
       process.env.DATA = "x=3&y=4"
-      expect(envLoader({ test: "env:DATA" })).to.be.eql({ x: 3, y: 4 })
+      expect(envLoader({ defaults: undefined, test: "env:DATA" }))
+        .to.be.eql({ x: 3, y: 4 })
     })
 
     it("should recognise temporal data and array", () => {
       process.env.DATA = "log[]=error&log[]=trace&time=2h"
-      const data = envLoader({ test: "env:DATA" })
+      const data = envLoader({ defaults: undefined, test: "env:DATA" })
       expect(data).to.have.all.keys([ "log", "time" ])
       expect(data.log).to.be.eql([ "error", "trace" ])
       expect(data.time).to.be.equal(7200000)
@@ -192,7 +209,7 @@ describe("env-loader", () => {
 
     it("should recognise inner data", () => {
       process.env.DATA = "x=3&y=4&data[foo]=bar&data[baaz]=null"
-      const data = envLoader({ test: "env:DATA" })
+      const data = envLoader({ defaults: undefined, test: "env:DATA" })
       expect(data).to.have.all.keys([ "x", "y", "data" ])
       expect(data.x).to.be.equal(3)
       expect(data.y).to.be.equal(4)

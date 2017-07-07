@@ -129,17 +129,19 @@ singleValue = value =>
 
 module.exports = (config, nodeEnv) => {
   nodeEnv = nodeEnv || getNodeEnv()
-  let defaults = config.defaults || config.development
-  let current = config[nodeEnv] || config.development
+  const { defaults, development } = config
+  let current = config[nodeEnv] || development
+  current = _.isUndefined(current) ? development : current
+  current = _.isUndefined(current) ? defaults : current
 
   if (defaults === current)
     current = parseEnvValue(_.clone(current))
 
-  else {
-    defaults = parseEnvValue(_.clone(defaults))
-    current = parseEnvValue(_.clone(current))
-    current = replicate(current, defaults)
-  }
+  else
+    current = replicate(
+      parseEnvValue(_.clone(current)),
+      parseEnvValue(_.clone(defaults))
+    )
 
   return current
 }
