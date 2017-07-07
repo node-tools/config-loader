@@ -54,7 +54,8 @@ function parseEnvValue(resource) {
             resource = duration.toSeconds(duration.parse(resource)) * 1000
             break
 
-          case !/^\w+:/.test(resource) && /=/.test(resource):
+          case /^\w+(\[\w*\])?=([^&]*)?(&\w+(\[\w*\])?=([^&]*)?)*$/
+              .test(resource):
             resource = _.chain(qs.parse(resource))
                         .map((v, k) => [ k, parseEnvValue(v) ])
                         .filter(([ _k, v ]) => v !== undefined)
@@ -64,6 +65,7 @@ function parseEnvValue(resource) {
             break
 
           // TODO: parse ISO-8601 date/time
+          // TODO: nested keys
           // TODO: regex
           default:
             // Take what you got
