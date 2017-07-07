@@ -20,7 +20,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@bitbucket.org:cacilhas/env-loader.git"
+    "url": "git@github.com:cacilhas/env-loader.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cacilhas/env-loader/issues"
   },
   "license": "BSD-3-Clause",
   "devDependencies": {
