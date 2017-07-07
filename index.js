@@ -64,6 +64,10 @@ function parseEnvValue(resource, isQs = false) {
             resource = singleValue(_.isEmpty(resource) ? undefined : resource)
             break
 
+          case /^\/.+\/$/.test(resource):
+            resource = new RegExp(resource.slice(1, -1))
+            break
+
           // TODO: parse ISO-8601 date/time
           // TODO: nested keys
           // TODO: regex

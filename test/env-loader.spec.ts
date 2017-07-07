@@ -146,6 +146,12 @@ describe("env-loader", () => {
       expect(envLoader({ defaults: undefined, test: "null" }))
         .to.be.equal("null")
     })
+
+    it("should return regex", () => {
+      const regex = envLoader({ defaults: undefined, test: "/^.*$/" })
+      expect(_.isRegExp(regex)).to.be.true
+      expect(regex.source).to.be.equal("^.*$")
+    })
   })
 
   describe("duration strings", () => {
@@ -224,6 +230,11 @@ describe("env-loader", () => {
     it("should not parse raw", () => {
       expect(envLoader({ defaults: undefined, test: "raw:raw:true" }))
         .to.be.equal("raw:true")
+    })
+
+    it("should not parse regex", () => {
+      expect(envLoader({ defaults: undefined, test: "raw:/^.*$/" }))
+        .to.be.equal("/^.*$/")
     })
   })
 
