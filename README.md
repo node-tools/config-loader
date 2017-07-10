@@ -8,8 +8,8 @@ This is a helper to make easier loading enviroment-oriented settings.
 
 ## Genesis
 
-This code has been born inside [B2WAds][b2wads] code
-base, and it made sense to release this as [open source](./COPYING).
+This code was born inside [B2WAds][b2wads] code base, and it made sense to
+release this as [open source](./COPYING).
 
 ## Use
 
