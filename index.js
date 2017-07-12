@@ -26,8 +26,8 @@ function replicate(destination, source) {
 
   if (_.isObject(destination))
     for (const attr in source)
-      if (destination[attr] === undefined)
-        destination[attr] = source[attr]
+      if (_.chain(source).keys().contains(attr).value())
+        destination[attr] = replicate(destination[attr], source[attr])
 
   return destination
 }
