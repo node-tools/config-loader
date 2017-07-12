@@ -82,6 +82,17 @@ describe("env-loader", () => {
         process.env.NODE_ENV = "test"
       }
     })
+
+    it("should defaults to defaults", () => {
+      env = envLoader({
+        defaults: { x: 3, "v.j": "test" },
+        test: { y: 4, "v.j": "env:DATA", "a.b.c": "env:ABC" },
+      })
+      expect(env.x).to.be.equal(3)
+      expect(env.y).to.be.equal(4)
+      expect(env.v.j).to.be.equal("test")
+      expect(env.a.b.c).to.be.undefined
+    })
   })
 
   describe("environments", () => {
