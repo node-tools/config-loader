@@ -62,7 +62,7 @@ function parseEnvValue(resource, isQs = false) {
               .test(resource):
             resource = _.chain(qs.parse(resource))
                         .map((v, k) => [ k, parseEnvValue(v, true) ])
-                        .filter(([ _k, v ]) => v !== undefined)
+                        .filter(pair => pair[1] !== undefined)
                         .object()
                         .value()
             resource = singleValue(_.isEmpty(resource) ? undefined : resource)
