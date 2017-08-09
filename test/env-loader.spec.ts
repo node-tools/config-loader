@@ -1,16 +1,8 @@
 import * as _ from "underscore"
-import envLoader = require("../index")
-
+import * as envLoader from "../index"
 
 const homedir = process.env.HOME
-const config: Configs = {
-  defaults:    { x: 3, y: 4 },
-  test:        { name: "test", log: false, foo: "", x: 23, y: 42 },
-  development: { name: "development", log: false, foo: "bar", x: 6, y: 8 },
-  production: {
-    name: "production", log: true, foo: null, z: 5, home: "env:HOME",
-  },
-}
+const config: Configs = require("./fixtures")
 
 
 describe("env-loader", () => {

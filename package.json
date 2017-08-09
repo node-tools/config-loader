@@ -9,7 +9,8 @@
     "node": ">= 6.10.0"
   },
   "scripts": {
-    "build": "tsc -p test",
+    "clean": "find test -name \"*.js\" -delete",
+    "build": "npm run clean && tsc -p test",
     "lint": "eslint --env es6 --env node --no-eslintrc index.js",
     "test": "npm run lint && npm run build && mocha --reporter dot"
   },
