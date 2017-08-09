@@ -182,7 +182,7 @@ module.exports = (config, nodeEnv) => {
   current = _.isUndefined(current) ? development : current
   current = _.isUndefined(current) ? defaults : current
 
-  if (defaults !== current)
+  if (current !== defaults)
     current = replicate(current, defaults)
 
   return current
