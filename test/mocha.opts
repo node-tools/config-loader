@@ -1,4 +1,5 @@
 --require should
+--require ./test/setup
 --slow 20
 --timeout 5000
 --growl
