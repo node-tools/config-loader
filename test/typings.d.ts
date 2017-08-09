@@ -8,3 +8,12 @@ declare module NodeJS {
     expect?: Chai.ExpectStatic
   }
 }
+
+type Config = { [key: string]: any }
+
+interface Configs extends envLoader.Config {
+  defaults: Config
+  test: Config
+  development: Config
+  production: Config
+}

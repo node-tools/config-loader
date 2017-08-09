@@ -2,16 +2,6 @@ import * as _ from "underscore"
 import envLoader = require("../index")
 
 
-type Config = { [key: string]: any }
-
-interface Configs extends envLoader.Config {
-  defaults: Config
-  test: Config
-  development: Config
-  production: Config
-}
-
-
 const homedir = process.env.HOME
 const config: Configs = {
   defaults:    { x: 3, y: 4 },
