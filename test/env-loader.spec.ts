@@ -1,6 +1,5 @@
 process.env.NODE_ENV = "test"
 import * as _ from "underscore"
-import { after, before, describe, it } from "mocha-co"
 import { expect } from "chai"
 import envLoader = require("../index")
 
