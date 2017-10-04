@@ -422,4 +422,41 @@ describe("env-loader", () => {
       expect(data.data).to.be.eql({ foo: "bar", baaz: null })
     })
   })
+
+  describe("regression: array must not be treated as object", () => {
+    const config = {
+      defaults: { log: [ "error", "trace" ] },
+      test: { log: [ "error" ] },
+      production: "env:DATA",
+    }
+
+    let test
+    let development
+    let production
+
+    before(() => {
+      // Grant cleaning start
+      delete process.env.DATA
+      process.env.DATA = "log[]=debug&log[]=console"
+      test = envLoader(config, "test")
+      development = envLoader(config, "development")
+      production = envLoader(config, "production")
+    })
+
+    after(() => {
+      delete process.env.DATA
+    })
+
+    it("should development be default", () => {
+      expect(development.log).to.be.eql([ "error", "trace" ])
+    })
+
+    it("should test be error", () => {
+      expect(test.log).to.be.eql([ "error" ])
+    })
+
+    it("should production be alternative", () => {
+      expect(production.log).to.be.eql([ "debug", "console" ])
+    })
+  })
 })
