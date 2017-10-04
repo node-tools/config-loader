@@ -188,8 +188,8 @@ describe("env-loader", () => {
     })
 
     it("should parse weeks", () => {
-      expect(envLoader({ defaults: undefined, test: "P2W" }))
-        .to.be.equal(1209600000)
+      expect(envLoader({ defaults: undefined, test: "P1W" }))
+        .to.be.equal(604800000)
     })
 
     it("should deal with compound times", () => {
