@@ -188,8 +188,8 @@ describe("env-loader", () => {
     })
 
     it("should parse weeks", () => {
-      expect(envLoader({ defaults: undefined, test: "P2W" }))
-        .to.be.equal(1209600000)
+      expect(envLoader({ defaults: undefined, test: "P1W" }))
+        .to.be.equal(604800000)
     })
 
     it("should deal with compound times", () => {
@@ -420,6 +420,43 @@ describe("env-loader", () => {
       expect(data.x).to.be.equal(3)
       expect(data.y).to.be.equal(4)
       expect(data.data).to.be.eql({ foo: "bar", baaz: null })
+    })
+  })
+
+  describe("regression: array must not be treated as object", () => {
+    const config = {
+      defaults: { log: [ "error", "trace" ] },
+      test: { log: [ "error" ] },
+      production: "env:DATA",
+    }
+
+    let test
+    let development
+    let production
+
+    before(() => {
+      // Grant cleaning start
+      delete process.env.DATA
+      process.env.DATA = "log[]=debug&log[]=console"
+      test = envLoader(config, "test")
+      development = envLoader(config, "development")
+      production = envLoader(config, "production")
+    })
+
+    after(() => {
+      delete process.env.DATA
+    })
+
+    it("should development be default", () => {
+      expect(development.log).to.be.eql([ "error", "trace" ])
+    })
+
+    it("should test be error", () => {
+      expect(test.log).to.be.eql([ "error" ])
+    })
+
+    it("should production be alternative", () => {
+      expect(production.log).to.be.eql([ "debug", "console" ])
     })
   })
 })
