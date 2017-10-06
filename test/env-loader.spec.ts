@@ -1,4 +1,5 @@
 import * as _ from "underscore"
+import * as path from "path"
 import * as envLoader from "../index"
 
 const homedir = process.env.HOME
@@ -457,6 +458,50 @@ describe("env-loader", () => {
 
     it("should production be alternative", () => {
       expect(production.log).to.be.eql([ "debug", "console" ])
+    })
+  })
+
+  describe("load file", () => {
+    context("json", () => {
+      let config
+
+      before(() => {
+        config = envLoader("./fixtures/test.json")
+      })
+
+      it("should load data from file", () => {
+        expect(config).to.be.eql({
+          x: 12,
+          y: 42,
+          z: 23,
+          date: new Date("2017-10-06"),
+        })
+      })
+    })
+
+    context("yaml", () => {
+      let config
+
+      before(() => {
+        config = envLoader("./fixtures/test.yaml")
+      })
+
+      it("should load data from file", () => {
+        expect(config).to.be.eql({
+          name: "John",
+          surname: "Marshall",
+          wait: 4000,
+        })
+      })
+    })
+
+    context("unknown extension", () => {
+      const mname = "./fixtures/test.txt"
+      const fname = path.join(path.dirname(__filename), mname)
+
+      it("should raise an exception with full file name", () => {
+        expect(() => envLoader(mname)).to.throw(`invalid file ${fname}`)
+      })
     })
   })
 })

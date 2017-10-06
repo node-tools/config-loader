@@ -1,6 +1,6 @@
 {
   "name": "env-o-loader",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "config loader with envvar support",
   "main": "index.js",
   "types": "index.d.ts",
@@ -40,6 +40,7 @@
   },
   "dependencies": {
     "iso8601-duration": "^1.0.6",
+    "js-yaml": "^3.10.0",
     "qs": "^6.5.0",
     "underscore": "^1.8.3"
   }
