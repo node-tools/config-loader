@@ -5,7 +5,10 @@
 /* eslint max-depth: 0 */
 
 const _ = require("underscore")
+const fs = require("fs")
+const path = require("path")
 const qs = require("qs")
+const yaml = require("js-yaml")
 const duration = require("iso8601-duration")
 let singleValue = null
 
@@ -165,6 +168,19 @@ function expandKeys(obj) {
 }
 
 
+function loadModule(fname) {
+  const base = path.dirname(module.parent.filename)
+  fname = path.join(base, fname)
+
+  if (fname.endsWith(".json"))
+    return require(fname)
+  else if (fname.endsWith(".yaml") || fname.endsWith(".yml"))
+    return yaml.safeLoad(fs.readFileSync(fname, "utf8"))
+  else
+    throw new Error(`invalid file ${fname}`)
+}
+
+
 singleValue = value =>
   (
     (_.keys(value).length === 1)
@@ -174,6 +190,9 @@ singleValue = value =>
 
 
 module.exports = (config, nodeEnv) => {
+  if (_.isString(config))
+    config = loadModule(config)
+
   nodeEnv = nodeEnv || getNodeEnv()
   config = parseEnvValue(expandKeys(_.clone(config)))
 

@@ -1,0 +1,7 @@
+defaults:
+  wait: PT4S
+  name: John
+  surname: Doe
+
+test:
+  surname: Marshall

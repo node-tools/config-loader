@@ -5,7 +5,9 @@ declare namespace envLoader {
   }
 }
 
-declare function envLoader(config: envLoader.Config, nodeEnv?: string): any
+declare function envLoader(
+  config: envLoader.Config | string, nodeEnv?: string
+): any
 
 export = envLoader
 export as namespace envLoader

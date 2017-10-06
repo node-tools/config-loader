@@ -3,6 +3,8 @@
 [b2wads]: http://www.b2wadvertising.com/
 [iso8601]: https://en.wikipedia.org/wiki/ISO_8601
 [license]: https://opensource.org/licenses/BSD-3-Clause
+[json]: http://json.org/
+[yaml]: http://www.yaml.org/
 
 This is a helper to make easier loading enviroment-oriented settings.
 
@@ -178,6 +180,19 @@ To force string, you must prefix the value with `raw:`:
 - `raw:42` resolves to `"42"`
 - `raw:env:HOME` resolves to `"env:HOME"`
 - `raw:raw:` resolves to `"raw:"`
+
+### Loading files
+
+Env-o-Loader can load files by its names. The supported types are [JSON][json]
+and [YAML][yaml].
+
+The JSON file string **must** ends with `.json`, and the YAML file string
+**must** ends with `.yaml` or `.yml`.
+
+Examples:
+
+- `loader("./config/data.json")`
+- `loader("../../settings.yaml")`
 
 ## License
 
