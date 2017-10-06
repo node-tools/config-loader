@@ -169,7 +169,9 @@ function expandKeys(obj) {
 
 
 function loadModule(fname) {
-  const base = path.dirname(module.parent.filename)
+  const caller = (new Error).stack.split("\n")[3]
+    .replace(/^.*?\(/, "").replace(/:\d+:\d+\)$/, "")
+  const base = path.dirname(caller)
   fname = path.join(base, fname)
 
   if (fname.endsWith(".json"))
