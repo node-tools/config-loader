@@ -496,8 +496,8 @@ describe("env-loader", () => {
     })
 
     context("unknown extension", () => {
-      const mname = "./fixtures/test.txt"
-      const fname = path.join(path.dirname(__filename), mname)
+      const mname: string = "./fixtures/test.txt"
+      const fname: string = path.join(path.dirname(__filename), mname)
 
       it("should raise an exception with full file name", () => {
         expect(() => envLoader(mname)).to.throw(`invalid file ${fname}`)
