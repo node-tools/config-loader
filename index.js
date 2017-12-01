@@ -10,6 +10,8 @@ const path = require("path")
 const qs = require("qs")
 const yaml = require("js-yaml")
 const duration = require("iso8601-duration")
+const callsites = require("callsites")
+
 let singleValue = null
 
 const getNodeEnv = () => process.env.NODE_ENV || "development"
@@ -170,9 +172,7 @@ function expandKeys(obj) {
 
 function loadModule(fname) {
   if (!fname.startsWith("/")) {
-    const caller = (new Error).stack.split("\n")[3]
-      .replace(/^.*?\(/, "").replace(/:\d+:\d+\)$/, "")
-    const base = path.dirname(caller)
+    const base = path.dirname(callsites()[2].getFileName())
     fname = path.join(base, fname)
   }
 
