@@ -24,6 +24,49 @@ const durationPattern = new RegExp(
 const dtPattern =
   /^\d{4}-\d\d-\d\d(T\d\d:\d\d(:\d\d(\.\d\d\d)?([+-]\d{4}|Z)?)?)?$/
 
+function buildEnvromentConfigs(configs) {
+  const envName = getNodeEnv().toUpperCase()
+  const rootKeys = Object.keys(process.env)
+                         .filter(key => key.startsWith(envName))
+  
+  for(const propName of rootKeys) {
+    const [ , ...navKeys ] = propName.split(/_/g)
+      const desiredValue = process.env[propName]
+      setValue(configs, navKeys, desiredValue)
+  }
+  
+  return configs
+}
+
+function setValue(configs, navKeys, desiredValue) {
+
+  for (const currentKey of navKeys) {
+    const entry = [
+      [ currentKey              , configs[currentKey]               ],
+      [ currentKey.toLowerCase(), configs[currentKey.toLowerCase()] ]
+    ].find(e => e[1])
+
+    if (entry) {
+      const [ propName, propValue ] = entry
+      if (propName) { 
+        
+        /** if Object */
+        if (
+            _.isObject(propValue) && 
+            !_.isArray(propValue)
+          ) {
+
+          const [, ...tail ] = navKeys
+          configs[propName] = setValue(configs[propName], tail, desiredValue)
+        } else {
+          configs[propName] = desiredValue
+        }
+      }
+    }
+
+    return configs
+  }
+}
 
 function replicate(destination, source) {
   if (destination === undefined || destination === source)
@@ -208,5 +251,6 @@ module.exports = (config, nodeEnv) => {
   if (current !== defaults)
     current = replicate(current, defaults)
 
-  return current
+  return buildEnvromentConfigs(current)
+  // return current
 }

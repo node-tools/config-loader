@@ -45,7 +45,7 @@ describe("env-loader", () => {
       }
     })
 
-    it("should use development when no NODE_ENV", () => {
+    it("should use deveextensionlopment when no NODE_ENV", () => {
       try {
         delete process.env.NODE_ENV
         env = envLoader(config)
@@ -158,8 +158,8 @@ describe("env-loader", () => {
     it("should return regex", () => {
       const regex = envLoader({ defaults: undefined, test: "/^.*$/gi" })
       expect(regex).to.be.a("RegExp")
-      expect(regex.source).to.be.equal("^.*$")
-      expect(regex.flags).to.be.equal("gi")
+      expect(regex.source).to.be.eqls("^.*$")
+      expect(regex.flags).to.be.eqls("gi")
     })
   })
 
@@ -501,6 +501,33 @@ describe("env-loader", () => {
 
       it("should raise an exception with full file name", () => {
         expect(() => envLoader(mname)).to.throw(`invalid file ${fname}`)
+      })
+    })
+  })
+
+  describe("overwrite from envronment variable", () => {
+    let config
+
+    before(() => {
+      process.env.TEST_NAME = "Luiz"
+      process.env.TEST_SURNAME = "Zamboni"
+      process.env.TEST_A_AB = "ab value" 
+      process.env.TEST_A_C = "c value" 
+
+      config = envLoader({
+        defaults: {
+          name: "Luiz",
+          surname: "Zamboni",
+          a: { ab: "old ab", c: "old c" }
+        }
+      })
+    })
+
+    it("should load data from file", () => {
+      expect(config).to.be.eql({
+        name: "Luiz",
+        surname: "Zamboni",
+        a: { ab: 'ab value', c: "c value" }
       })
     })
   })
